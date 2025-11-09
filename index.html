@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="A polished, responsive sample website built with semantic HTML and modern CSS." />
+  <title>Vibsit — Sample Website</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* --- CSS RESET (modern, minimal) --- */
+    *,*::before,*::after{box-sizing:border-box}
+    html:focus-within{scroll-behavior:smooth}
+    body{margin:0;min-height:100vh;text-rendering:optimizeLegibility}
+    img,svg,video,canvas{display:block;max-width:100%;height:auto}
+    input,button,textarea,select{font:inherit}
+
+    /* --- THEME TOKENS --- */
+    :root{
+      --bg: #0b0c10;
+      --bg-soft: #0f1117;
+      --panel: #141821;
+      --text: #e6e6e6;
+      --muted: #b8c0cc;
+      --brand: #7c5cff;
+      --brand-2: #22c1c3;
+      --ring: 0 0 0 0.2rem rgba(124,92,255,.35);
+      --shadow: 0 10px 25px rgba(0,0,0,.35);
+      --radius: 16px;
+      --radius-sm: 12px;
+      --maxw: 1120px;
+      --gradient: radial-gradient(1200px 600px at 10% -10%, rgba(124,92,255,.25), transparent 60%),
+                  radial-gradient(1000px 600px at 90% 10%, rgba(34,193,195,.20), transparent 60%),
+                  linear-gradient(180deg, #0b0c10, #0b0c10 40%, #0f1117 100%);
+    }
+
+    @media (prefers-color-scheme: light){
+      :root{
+        --bg: #f8fafc;
+        --bg-soft: #ffffff;
+        --panel: #ffffff;
+        --text: #0b1220;
+        --muted: #475569;
+        --brand: #6d28d9;
+        --brand-2: #0891b2;
+        --ring: 0 0 0 0.2rem rgba(109,40,217,.25);
+        --shadow: 0 10px 25px rgba(2,6,23,.08);
+        --gradient: radial-gradient(800px 400px at 10% -10%, rgba(109,40,217,.15), transparent 60%),
+                    radial-gradient(600px 400px at 90% 10%, rgba(8,145,178,.12), transparent 60%),
+                    linear-gradient(180deg, #f8fafc, #ffffff 50%, #f1f5f9 100%);
+      }
+    }
+
+    body{
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      color: var(--text);
+      background: var(--gradient);
+      line-height: 1.6;
+    }
+
+    a{color:inherit;text-decoration:none}
+    a.btn{display:inline-block;padding:.85rem 1.15rem;border-radius:999px;background:var(--brand);color:white;font-weight:600;box-shadow: var(--shadow);transition: transform .06s ease, box-shadow .2s ease}
+    a.btn:hover{transform:translateY(-1px)}
+    a.btn.secondary{background:transparent;border:1px solid rgba(124,92,255,.5);color:var(--text)}
+
+    .container{max-width:var(--maxw);margin-inline:auto;padding-inline: clamp(1rem, 2.5vw, 2rem)}
+    .section{padding: clamp(3rem, 10vw, 6rem) 0}
+    .panel{background:var(--panel);border:1px solid rgba(255,255,255,.06);border-radius:var(--radius);box-shadow:var(--shadow)}
+
+    /* --- ACCESSIBILITY UTILITIES --- */
+    .skip-link{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden}
+    .skip-link:focus{left:1rem;top:1rem;width:auto;height:auto;padding:.5rem .75rem;border-radius:.5rem;background:#111;color:#fff;z-index:9999}
+    :focus-visible{outline:var(--ring)}
+
+    /* --- HEADER --- */
+    header{
+      position: sticky; top: 0; z-index: 50; backdrop-filter: saturate(180%) blur(10px);
+      background: color-mix(in oklab, var(--bg) 85%, transparent);
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+    .nav{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding: .85rem 0}
+    .brand{display:flex;align-items:center;gap:.65rem;font-weight:800}
+    .brand .logo{width:28px;height:28px;border-radius:8px;background: conic-gradient(from 200deg, var(--brand), var(--brand-2));box-shadow: var(--shadow)}
+
+    /* Mobile nav */
+    #menu-toggle{display:none}
+    .links{display:flex;gap:1rem;align-items:center}
+    .links a{opacity:.9;padding:.5rem .75rem;border-radius:.65rem}
+    .links a:hover{background:rgba(124,92,255,.12)}
+    .menu-btn{display:none}
+
+    @media (max-width: 800px){
+      .menu-btn{display:inline-flex;align-items:center;gap:.5rem;padding:.5rem .75rem;border:1px solid rgba(255,255,255,.1);border-radius:.75rem;cursor:pointer}
+      .links{display:none;position:absolute;inset: calc(100% - 1px) 0 auto 0;padding:1rem;background:var(--bg-soft);border-bottom:1px solid rgba(255,255,255,.08)}
+      #menu-toggle:checked ~ .links{display:flex;flex-direction:column}
+    }
+
+    /* --- HERO --- */
+    .hero{display:grid;grid-template-columns: 1.2fr .8fr;gap: clamp(1.5rem, 4vw, 3rem);align-items:center}
+    .hero .kicker{display:inline-flex;align-items:center;gap:.5rem;padding:.35rem .6rem;border:1px solid rgba(124,92,255,.35);border-radius:999px;font-size:.85rem;color:var(--muted)}
+    .hero h1{font-size: clamp(2rem, 5vw, 3.25rem);line-height:1.1;margin:.6rem 0}
+    .hero p{color:var(--muted);max-width: 60ch}
+    .cta{display:flex;gap:.75rem;flex-wrap:wrap;margin-top:1rem}
+    .mock{aspect-ratio: 4/3;border-radius: var(--radius);background:
+      linear-gradient(135deg, rgba(124,92,255,.25), rgba(34,193,195,.2)),
+      repeating-linear-gradient(0deg, rgba(255,255,255,.06) 0 2px, transparent 2px 40px);
+      border:1px solid rgba(255,255,255,.08);box-shadow: var(--shadow);}
+    @media (max-width: 900px){.hero{grid-template-columns:1fr}}
+
+    /* --- FEATURES --- */
+    .features{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+    @media (max-width: 900px){.features{grid-template-columns:1fr 1fr}}
+    @media (max-width: 640px){.features{grid-template-columns:1fr}}
+    .feature{padding:1.15rem}
+    .feature h3{margin:.25rem 0 .25rem;font-size:1.1rem}
+    .icon{width:36px;height:36px;border-radius:10px;background: linear-gradient(135deg, var(--brand), var(--brand-2));display:grid;place-items:center;box-shadow: var(--shadow)}
+
+    /* --- TESTIMONIALS --- */
+    .testi{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+    @media (max-width: 900px){.testi{grid-template-columns:1fr}}
+    .quote{padding:1rem}
+    .quote p{color:var(--muted)}
+
+    /* --- PRICING --- */
+    .pricing{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+    @media (max-width: 900px){.pricing{grid-template-columns:1fr}}
+    .price-card{position:relative;overflow:hidden}
+    .price-card .ribbon{position:absolute;right:-40px;top:16px;rotate:35deg;background:var(--brand);color:#fff;padding:.25rem 3rem;font-weight:700;letter-spacing:.04em}
+    .price{font-size:2rem;font-weight:800}
+    .price small{font-weight:600;color:var(--muted)}
+    .price-features{display:grid;gap:.4rem;color:var(--muted)}
+
+    /* --- CONTACT --- */
+    form{display:grid;gap:.75rem}
+    label{font-weight:600}
+    input, textarea{width:100%;padding:.8rem 1rem;border-radius:.8rem;border:1px solid rgba(255,255,255,.14);background:color-mix(in oklab, var(--panel) 90%, transparent);color:inherit}
+    textarea{min-height:140px;resize:vertical}
+    .small{font-size:.875rem;color:var(--muted)}
+
+    /* --- FOOTER --- */
+    footer{color:var(--muted);border-top:1px solid rgba(255,255,255,.08)}
+    .foot{display:flex;gap:1rem;justify-content:space-between;align-items:center;padding:1.25rem 0;flex-wrap:wrap}
+    .foot .social{display:flex;gap:.5rem}
+    .chip{padding:.35rem .6rem;border:1px solid rgba(255,255,255,.14);border-radius:999px}
+
+    /* --- ANIMATIONS --- */
+    @keyframes float {from{transform: translateY(0)} 50%{transform: translateY(-6px)} to{transform: translateY(0)}}
+    .float{animation: float 6s ease-in-out infinite}
+  </style>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <!-- Header / Nav -->
+  <header aria-label="Primary">
+    <div class="container nav">
+      <div class="brand">
+        <div class="logo float" aria-hidden="true"></div>
+        <a href="#" aria-label="Vibsit Home">Vibsit</a>
+      </div>
+
+      <label class="menu-btn" for="menu-toggle" aria-label="Open Menu">☰ Menu</label>
+      <input id="menu-toggle" type="checkbox" aria-hidden="true" />
+
+      <nav class="links" aria-label="Main navigation">
+        <a href="#features">Features</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#contact">Contact</a>
+        <a class="btn" href="#contact">Get Started</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- Hero -->
+    <section class="section">
+      <div class="container hero">
+        <div>
+          <span class="kicker">✨ New: Instant setup</span>
+          <h1>Build a beautiful website in minutes — not months.</h1>
+          <p>Vibsit is a sleek, responsive starter you can copy‑paste and customize. Clean semantics, accessible defaults, and a modern look out of the box.</p>
+          <div class="cta">
+            <a class="btn" href="#pricing">See Pricing</a>
+            <a class="btn secondary" href="#features">Explore Features</a>
+          </div>
+          <p class="small">No frameworks, no JS required. Works everywhere.</p>
+        </div>
+        <div class="mock panel" role="img" aria-label="Product mockup placeholder"></div>
+      </div>
+    </section>
+
+    <!-- Features -->
+    <section id="features" class="section">
+      <div class="container">
+        <h2 style="margin:0 0 1rem">Features that feel premium</h2>
+        <div class="features">
+          <article class="panel feature">
+            <div class="icon" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20"/></svg>
+            </div>
+            <h3>Responsive by default</h3>
+            <p>Looks great on phones, tablets, and desktops with fluid grids and modern units.</p>
+          </article>
+          <article class="panel feature">
+            <div class="icon" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10M12 2a15.3 15.3 0 0 0-4 10 15.3 15.3 0 0 0 4 10"/></svg>
+            </div>
+            <h3>Accessible & semantic</h3>
+            <p>Skip links, landmarks, focus styles, and helpful aria labels built in.</p>
+          </article>
+          <article class="panel feature">
+            <div class="icon" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <h3>Ready to brand</h3>
+            <p>Change a couple of CSS variables and you’ve got your palette and vibe.</p>
+          </article>
+          <article class="panel feature">
+            <div class="icon" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            </div>
+            <h3>Modular sections</h3>
+            <p>Grab only what you need: hero, features, pricing, testimonials, contact.</p>
+          </article>
+          <article class="panel feature">
+            <div class="icon" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            </div>
+            <h3>Light or dark</h3>
+            <p>Automatically adapts to system theme using <code>prefers-color-scheme</code>.</p>
+          </article>
+          <article class="panel feature">
+            <div class="icon" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18"/><path d="M3 6h18"/><path d="M3 18h18"/></svg>
+            </div>
+            <h3>Tiny footprint</h3>
+            <p>No JS, one file. Easy to host anywhere.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="section">
+      <div class="container">
+        <h2 style="margin:0 0 1rem">Loved by makers</h2>
+        <div class="testi">
+          <blockquote class="panel quote">
+            <p>“I shipped a landing page in an afternoon. The CSS tokens made customization painless.”</p>
+            <cite>— Alex R., Indie dev</cite>
+          </blockquote>
+          <blockquote class="panel quote">
+            <p>“Accessible out of the box and actually pretty. My clients noticed.”</p>
+            <cite>— Sana K., Designer</cite>
+          </blockquote>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing -->
+    <section id="pricing" class="section">
+      <div class="container">
+        <h2 style="margin:0 0 1rem">Simple pricing</h2>
+        <div class="pricing">
+          <article class="panel price-card">
+            <div style="padding:1.25rem">
+              <h3 style="margin:.25rem 0 .5rem">Starter</h3>
+              <p class="price">$0 <small>/ forever</small></p>
+              <div class="price-features">
+                <span>✔ 1 page template</span>
+                <span>✔ Email support</span>
+                <span>✔ MIT license</span>
+              </div>
+              <p style="margin-top:1rem"><a class="btn secondary" href="#contact">Get free</a></p>
+            </div>
+          </article>
+          <article class="panel price-card">
+            <div class="ribbon" aria-hidden="true">POPULAR</div>
+            <div style="padding:1.25rem">
+              <h3 style="margin:.25rem 0 .5rem">Pro</h3>
+              <p class="price">$29 <small>/ one‑time</small></p>
+              <div class="price-features">
+                <span>✔ All sections</span>
+                <span>✔ Extra layouts</span>
+                <span>✔ Priority support</span>
+              </div>
+              <p style="margin-top:1rem"><a class="btn" href="#contact">Buy Pro</a></p>
+            </div>
+          </article>
+          <article class="panel price-card">
+            <div style="padding:1.25rem">
+              <h3 style="margin:.25rem 0 .5rem">Team</h3>
+              <p class="price">$89 <small>/ one‑time</small></p>
+              <div class="price-features">
+                <span>✔ Unlimited sites</span>
+                <span>✔ Figma kit</span>
+                <span>✔ Lifetime updates</span>
+              </div>
+              <p style="margin-top:1rem"><a class="btn secondary" href="#contact">Contact sales</a></p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" class="section">
+      <div class="container">
+        <div class="panel" style="padding:1.25rem">
+          <h2 style="margin:0 0 1rem">Say hello</h2>
+          <form action="#" method="post" aria-labelledby="contact-heading">
+            <div>
+              <label for="name">Your name</label>
+              <input id="name" name="name" type="text" placeholder="Ada Lovelace" required />
+            </div>
+            <div>
+              <label for="email">Email address</label>
+              <input id="email" name="email" type="email" placeholder="you@example.com" required />
+            </div>
+            <div>
+              <label for="msg">Message</label>
+              <textarea id="msg" name="message" placeholder="What can we help with?" required></textarea>
+            </div>
+            <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap">
+              <button class="btn" type="submit">Send message</button>
+              <span class="small">We typically reply within 1 business day.</span>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container foot">
+      <div class="brand">
+        <div class="logo" aria-hidden="true" style="width:22px;height:22px"></div>
+        <span>Vibsit</span>
+      </div>
+      <div class="social">
+        <a class="chip" href="#">Twitter</a>
+        <a class="chip" href="#">GitHub</a>
+        <a class="chip" href="#">Dribbble</a>
+      </div>
+      <small>© <span id="y"></span> Vibsit. All rights reserved.</small>
+    </div>
+  </footer>
+
+  <script>
+    // Set year without needing any frameworks
+    document.getElementById('y').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
